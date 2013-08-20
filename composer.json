@@ -1,0 +1,43 @@
+{
+    "name":"Crowdpark/export-couchbase-mysql",
+    "type":"data export",
+    "description":"export data from couchbase into mysql",
+    "keywords":["export couchbase mysql" ],
+    "homepage":"https://github.com/wouter-crowdpark/export-couchbase-mysql",
+    "license":"MIT",
+    "authors":[
+        {
+            "name":"Wouter",
+            "email":"wouter@crowdpark.com",
+            "homepage":"http://www.crowdpark.com",
+            "role":"Developer"
+        }
+    ],
+    "autoload":{
+        "psr-0":{
+            "Application\\":"src/"
+        }
+    },
+
+    "repositories":[
+        {
+            "type":"composer",
+            "url":"http://packages.zendframework.com/"
+        }
+
+    ],
+    "require": {
+        "php":">=5.3.3",
+        "symfony/console": "2.1.3"
+    },
+    "require-dev": {
+    },
+    "replace": {
+    },
+
+    "bin": [
+
+    ]
+
+    ,"minimum-stability":"dev"
+}
