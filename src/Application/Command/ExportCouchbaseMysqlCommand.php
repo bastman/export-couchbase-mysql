@@ -61,6 +61,12 @@ class ExportCouchbaseMysqlCommand extends Command
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The mysql password'
+            )
+            ->addOption(
+                'truncate',
+                null,
+                InputOption::VALUE_NONE,
+                'Truncate table '
             );
     }
 
@@ -97,10 +103,11 @@ class ExportCouchbaseMysqlCommand extends Command
                     return $row['Field'];
                 }, $table);
 
-            // ask to trucate data
+            // truncate data
             $dialog = $this->getHelperSet()->get('dialog');
-            if ($dialog->askConfirmation($output, '<question>Table already exists, truncate?</question>',false))
+            if ($input->getOption('truncate') || $dialog->askConfirmation($output, '<question>Table already exists, truncate?</question>',false)) {
                 $db->query('truncate '.$mysqlConfig['table']);
+            }
         } catch (\Exception $ex) {
             $output->writeln('Creating mysql table '.$mysqlConfig['table']);
             $db->query('create table '.$mysqlConfig['table']. '(id varchar(255))');
