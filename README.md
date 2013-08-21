@@ -9,6 +9,7 @@ To allow for the export of large amounts of documents the batch-size option is s
 
 Usage:
 
+```
 # bin/console.php <command> <options>
 
 The export-couchbase-mysql command retrieves data using the native couchbase API and supports the following options:
@@ -50,3 +51,4 @@ The export-couchbase-mysql-custom command retrieves couchbase data using our cus
  --cb-ignore-cluster  Connect to given node only, ignore the rest of the cluster (useful when other nodes are firewalled)
 
  * All options are required unless noted otherwise.
+ ```
