@@ -11,4 +11,5 @@ use Symfony\Component\Console\Application;
 
 $console = new Application();
 $console->add(new \Application\Command\exportCouchbaseMysqlCommand());
+$console->add(new \Application\Command\exportCouchbaseMysqlCustomCommand());
 $console->run();
