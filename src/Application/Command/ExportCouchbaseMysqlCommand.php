@@ -28,6 +28,12 @@ class ExportCouchbaseMysqlCommand extends Command
             ->setName('export-couchbase-mysql')
             ->setDescription('Export data from a couchbase view to a mysql table')
             ->addOption(
+                'config-file',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'file containing configuration in JSON'
+            )
+            ->addOption(
                 'cb-host',
                 null,
                 InputOption::VALUE_REQUIRED,
@@ -157,9 +163,24 @@ class ExportCouchbaseMysqlCommand extends Command
     /**
      * parse input parameters into couchbase & database configuration
      * @param InputInterface $input
+     * @param OutputInterface $output
      */
     protected function parseInput($input)
     {
+        if ($configFile = $input->getOption('config-file')) {
+            if (!is_file($configFile))
+                throw new \ErrorException('Could not read config file');
+
+            $config = json_decode(file_get_contents($configFile), true);
+
+            if (!is_array($config))
+                throw new \ErrorException('Config is not valid JSON');
+
+            foreach ($config as $key => $value) {
+                $input->setOption($key, $value);
+            }
+        }
+
         $this->cbConfig = array(
             'host' => $input->getOption('cb-host'),
             'bucket' => $input->getOption('cb-bucket') ? $input->getOption('cb-bucket') : 'default',
