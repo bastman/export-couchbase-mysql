@@ -13,8 +13,8 @@ class ExportCouchbaseMysqlCommand extends Command
     /** @var array couchbase config  */
     protected $cbConfig;
 
-    /** @var array database config  */
-    protected $dbConfig;
+    /** @var array mysql config  */
+    protected $mysqlConfig;
 
     /** @var instance of native couchbase */
     private $nativeCb;
@@ -43,7 +43,7 @@ class ExportCouchbaseMysqlCommand extends Command
                 'cb-bucket',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'The couchbase bucket'
+                "The couchbase bucket, defaults to 'default'"
             )
             ->addOption(
                 'cb-user',
@@ -73,7 +73,7 @@ class ExportCouchbaseMysqlCommand extends Command
                 'mysql-host',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'The mysql host host to connect to'
+                "The mysql host host to connect to"
             )
             ->addOption(
                 'mysql-db',
@@ -97,7 +97,7 @@ class ExportCouchbaseMysqlCommand extends Command
                 'mysql-table',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'The mysql password'
+                'The mysql table, defaults to the name of the couchbase view'
             )
             ->addOption(
                 'truncate',
@@ -190,13 +190,28 @@ class ExportCouchbaseMysqlCommand extends Command
             'view' => $input->getOption('cb-view'),
         );
 
+        if (!$this->cbConfig['host'])
+            throw new \ErrorException('Please supply the couchbase host (--cb-host)');
+
+        if (!$this->cbConfig['design'])
+            throw new \ErrorException('Please supply the couchbase design (--cb-design)');
+
+        if (!$this->cbConfig['view'])
+            throw new \ErrorException('Please supply the couchbase view (--cb-view)');
+
         $this->mysqlConfig = array(
-            'host' => $input->getOption('mysql-host') ? $input->getOption('mysql-host') : 'localhost',
+            'host' => $input->getOption('mysql-host'),
             'db' => $input->getOption('mysql-db'),
             'user' => $input->getOption('mysql-user'),
             'pass' => $input->getOption('mysql-password'),
             'table' => $input->getOption('mysql-table') ? $input->getOption('mysql-table') : $this->cbConfig['view'],
         );
+
+        if (!$this->mysqlConfig['host'])
+            throw new \ErrorException('Please supply the mysql host (--mysql-host)');
+
+        if (!$this->mysqlConfig['db'])
+            throw new \ErrorException('Please supply the mysql database (--mysql-db)');
     }
 
     /**
@@ -212,8 +227,12 @@ class ExportCouchbaseMysqlCommand extends Command
         $mysqlConfig = $this->mysqlConfig;
 
         // connect to mysql
-        $db = new \PDO('mysql:host='.$mysqlConfig['host'].';dbname='.$mysqlConfig['db'],$mysqlConfig['user'],$mysqlConfig['pass']);
-        $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        try {
+            $db = new \PDO('mysql:host='.$mysqlConfig['host'].';dbname='.$mysqlConfig['db'],$mysqlConfig['user'],$mysqlConfig['pass']);
+            $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        } catch (\Exception $ex) {
+            throw new \ErrorException('Could not connect to mysql database');
+        }
 
         // check mysql table & structure
         try {
@@ -243,11 +262,9 @@ class ExportCouchbaseMysqlCommand extends Command
         $pageSize = $input->getOption('pageSize') ? $input->getOption('pageSize') : 1000;
         while ($offset < count($allKeys)) {
             $keys = array_slice($allKeys, $offset, $pageSize);
-            //var_dump($keys);die();
 
             // retrieve couchbase results, convert json to php array
-                $results = $this->getMulti($keys);
-
+            $results = $this->getMulti($keys);
 
             // retrieve a list of unique columns from the data
             $cbColumns = array_reduce($results, function($v, $w) {
