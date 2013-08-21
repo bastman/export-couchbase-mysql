@@ -36,7 +36,7 @@ class ExportCouchbaseMysqlCustomCommand extends ExportCouchbaseMysqlCommand
                 'cb-ignore-cluster',
                 null,
                 InputOption::VALUE_NONE,
-                'Connect to given node only, ignore the rest of the cluster'
+                'Connect to given node only, ignore the rest of the cluster (useful when other nodes are firewalled)'
             );
     }
 
@@ -73,6 +73,9 @@ class ExportCouchbaseMysqlCustomCommand extends ExportCouchbaseMysqlCommand
             'bucket-port' => $input->getOption('cb-bucket-port'),
             'ignore-cluster' => $input->getOption('cb-ignore-cluster')
         ));
+
+        if (!$this->cbConfig['bucket-port'] || (int) $this->cbConfig['bucket-port'] < 1)
+            throw new \ErrorException('Please supply a valid bucket port (--cb-bucket=port)');
     }
 
     /**
