@@ -10,7 +10,7 @@ To allow for the export of large amounts of documents the batch-size option is s
 Usage:
 
 ```
-# bin/console.php <command> <options>
+# example/console.php <command> <options>
 
 The export-couchbase-mysql command retrieves data using the native couchbase API and supports the following options:
 

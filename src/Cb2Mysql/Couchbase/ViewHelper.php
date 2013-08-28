@@ -7,9 +7,9 @@
  * To change this template use File | Settings | File Templates.
  */
 
-namespace Application\Lib\Couchbase;
+namespace Cb2Mysql\Couchbase;
 
-use Application\Utils\Id;
+use Cb2Mysql\Utils\Id;
 
 class ViewHelper
 {
