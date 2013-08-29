@@ -66,32 +66,15 @@ class MysqlModel
     }
 
     /**
-     * @param string $db
-     * @throws \InvalidArgumentException
-     */
-    protected function setDb($db)
-    {
-        if ($db) {
-            $this->db = $db;
-        } else {
-            throw new \InvalidArgumentException('Please supply the mysql database');
-        }
-    }
-
-    /**
-     * @return string
-     */
-    public function getDb()
-    {
-        return $this->db;
-    }
-
-    /**
      * @param string $dsn
      */
     protected function setDsn($dsn)
     {
-        $this->dsn = $dsn;
+        if ($dsn) {
+            $this->dsn = $dsn;
+        } else {
+            throw new \InvalidArgumentException("Please supply the dsn");
+        }
     }
 
     /**
@@ -138,7 +121,7 @@ class MysqlModel
      * @param $table
      * @return array
      */
-    public function getTableColumns($table)
+    public function getColumns($table)
     {
         if (!isset($this->tableColumns[$table])) {
             $this->tableColumns[$table] = $this->describeTable($table);
@@ -196,7 +179,7 @@ class MysqlModel
      */
     public function addColumns($table, $columns)
     {
-        foreach (array_diff($columns, $this->getTableColumns($table)) as $column) {
+        foreach (array_diff($columns, $this->getColumns($table)) as $column) {
             $this->getPdoInstance()->exec('alter table ' . $table . ' add column ' . $column . ' TEXT');
         }
 

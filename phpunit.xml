@@ -1,0 +1,5 @@
+<testsuites>
+    <testsuite name="Export couchbase mysql test suite">
+        <directory>test</directory>
+    </testsuite>
+</testsuites>

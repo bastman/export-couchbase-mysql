@@ -31,6 +31,8 @@
         "symfony/console": "2.1.3"
     },
     "require-dev": {
+        "phpunit/phpunit": "3.7.*",
+        "phake/phake": "1.*"
     },
     "replace": {
     },

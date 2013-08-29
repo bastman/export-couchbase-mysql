@@ -21,6 +21,11 @@ class ExportCouchbaseMysql
      */
     protected $batchSize;
 
+    /**
+     * @param CouchbaseModel $cbModel
+     * @param MysqlModel $mysqlModel
+     * @param int $batchSize
+     */
     public function __construct($cbModel, $mysqlModel, $batchSize=1000)
     {
         $this->setCbModel($cbModel);
