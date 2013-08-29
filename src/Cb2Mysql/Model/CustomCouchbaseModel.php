@@ -38,6 +38,7 @@ class CustomCouchbaseModel extends CouchbaseModel
 
     /**
      * @param int $bucketPort
+     * @throws \InvalidArgumentException
      */
     protected function setBucketPort($bucketPort)
     {
@@ -92,6 +93,8 @@ class CustomCouchbaseModel extends CouchbaseModel
 
     /***
      * retrieve list of couchbase keys from a view
+     * @param $design
+     * @param $view
      * @return array of keys
      */
     public function getKeys($design, $view)

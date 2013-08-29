@@ -547,6 +547,7 @@ class ClientJson
 
     /**
      * @param string $key
+     * @throws \Exception
      * @return null|array|string|mixed
      */
     public function fetchKey($key)
@@ -763,6 +764,7 @@ class ClientJson
 
     /**
      * @param string $key
+     * @throws \Exception
      * @return bool
      */
     public function deleteKey($key)

@@ -7,7 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Cb2Mysql\model\PDOModel;
+use Cb2Mysql\model\MysqlModel;
 use Cb2Mysql\model\CouchbaseModel;
 use Cb2Mysql\ExportCouchbaseMysql;
 
@@ -110,7 +110,8 @@ class ExportCouchbaseMysqlCommand extends Command
     /**
      * parse input parameters, loading config file if needed
      * @param InputInterface $input
-     * @param OutputInterface $output
+     * @throws \ErrorException
+     * @internal param \Symfony\Component\Console\Output\OutputInterface $output
      */
     protected function parseInput($input)
     {
@@ -134,6 +135,7 @@ class ExportCouchbaseMysqlCommand extends Command
      *
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -146,13 +148,13 @@ class ExportCouchbaseMysqlCommand extends Command
             $input->getOption('cb-pass')
         );
 
-        $PDOModel = new PDOModel(
+        $MysqlModel = new MysqlModel(
             'mysql:host='.$input->getOption('mysql-host').';dbname='.$input->getOption('mysql-db'),
             $input->getOption('mysql-user'),
             $input->getOption('mysql-password')
         );
 
-        $instance = new ExportCouchbaseMysql($cbModel, $PDOModel);
+        $instance = new ExportCouchbaseMysql($cbModel, $MysqlModel);
         if ($batchSize = $input->getOption('batch-size'))
             $instance->setBatchSize($batchSize);
 

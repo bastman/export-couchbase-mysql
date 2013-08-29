@@ -44,8 +44,8 @@ class CouchbaseModel
 
     /**
      * get native couchbase instance
+     * @throws \ErrorException
      * @return Couchbase
-     * @throws ErrorException
      */
     protected function getNativeInstance()
     {
@@ -63,6 +63,7 @@ class CouchbaseModel
 
     /**
      * @param mixed $host
+     * @throws \InvalidArgumentException
      */
     protected function setHost($host)
     {
@@ -82,6 +83,7 @@ class CouchbaseModel
 
     /**
      * @param mixed $bucket
+     * @throws \InvalidArgumentException
      */
     protected function setBucket($bucket)
     {
@@ -130,9 +132,11 @@ class CouchbaseModel
     {
         return $this->password;
     }
-    
+
     /***
      * retrieve list of couchbase keys from a view
+     * @param $design
+     * @param $view
      * @return array of keys
      */
     public function getKeys($design, $view)

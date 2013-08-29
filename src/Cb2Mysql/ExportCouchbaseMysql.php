@@ -2,7 +2,7 @@
 namespace Cb2Mysql;
 
 use Cb2Mysql\model\CouchbaseModel;
-use Cb2Mysql\model\PDOModel;
+use Cb2Mysql\model\MysqlModel;
 
 class ExportCouchbaseMysql
 {
@@ -12,24 +12,25 @@ class ExportCouchbaseMysql
     protected $cbModel;
 
     /**
-     * @var PDOModel
+     * @var MysqlModel
      */
-    protected $PDOModel;
+    protected $mysqlModel;
 
     /**
      * @var int
      */
     protected $batchSize;
 
-    public function __construct($cbModel, $PDOModel, $batchSize=1000)
+    public function __construct($cbModel, $mysqlModel, $batchSize=1000)
     {
         $this->setCbModel($cbModel);
-        $this->setPDOModel($PDOModel);
+        $this->setMysqlModel($mysqlModel);
         $this->setBatchSize($batchSize);
     }
 
     /**
      * @param int $batchSize
+     * @throws \InvalidArgumentException
      */
     public function setBatchSize($batchSize)
     {
@@ -64,19 +65,19 @@ class ExportCouchbaseMysql
     }
 
     /**
-     * @param \PDOModel $PDOModel
+     * @param \MysqlModel $mysqlModel
      */
-    public function setPDOModel($PDOModel)
+    public function setMysqlModel($mysqlModel)
     {
-        $this->PDOModel = $PDOModel;
+        $this->mysqlModel = $mysqlModel;
     }
 
     /**
-     * @return \PDOModel
+     * @return \MysqlModel
      */
-    public function getPDOModel()
+    public function getMysqlModel()
     {
-        return $this->PDOModel;
+        return $this->mysqlModel;
     }
 
     /**
@@ -93,8 +94,11 @@ class ExportCouchbaseMysql
         if (!$mysqlTable)
             $mysqlTable = $cbView;
 
-        $PDOModel = $this->PDOModel;
-        $PDOModel->setTable($mysqlTable, $truncateTable);
+        $mysqlModel = $this->mysqlModel;
+        $mysqlModel->createTable($mysqlTable, $truncateTable);
+
+        if($truncateTable)
+            $mysqlModel->truncateTable($mysqlTable);
 
         $cbModel = $this->cbModel;
 
@@ -122,12 +126,12 @@ class ExportCouchbaseMysql
                 }, array());
 
             // make sure all columns are added to the mysql table
-            $PDOModel->addColumns($columns);
+            $mysqlModel->addColumns($mysqlTable, $columns);
 
             // insert data
             $inserted = 0;
             foreach ($results as $id => $row) {
-                $PDOModel->addRow($row);
+                $mysqlModel->addRow($mysqlTable, $row);
                 $inserted++;
             }
 
