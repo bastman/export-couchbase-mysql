@@ -2,10 +2,10 @@
 namespace Cb2Mysql\model;
 
 /**
- * Class MysqlModel responsible for saving data to mysql
+ * Class PDOModel responsible for saving data to mysql
  *
  */
-class MysqlModel
+class PDOModel
 {
     /**
      * @var PDO
@@ -15,12 +15,7 @@ class MysqlModel
     /**
      * @var string
      */
-    protected $host;
-
-    /**
-     * @var string
-     */
-    protected $db;
+    protected $dsn;
 
     /**
      * @var string
@@ -48,10 +43,9 @@ class MysqlModel
      * @param string $user
      * @param string $password
      */
-    public function __construct($host, $db, $user='', $password='')
+    public function __construct($dsn, $user='', $password='')
     {
-        $this->setHost($host);
-        $this->setDb($db);
+        $this->setDsn($dsn);
         $this->setUser($user);
         $this->setPassword($password);
     }
@@ -66,7 +60,7 @@ class MysqlModel
         {
             // connect to mysql
             try {
-                $this->pdoInstance = new \PDO("mysql:host=$this->host;dbname=$this->db",$this->user,$this->password);
+                $this->pdoInstance = new \PDO($this->dsn,$this->user,$this->password);
                 $this->pdoInstance->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
             } catch (\Exception $ex) {
                 throw new \ErrorException('Could not connect to mysql database');
@@ -96,22 +90,19 @@ class MysqlModel
     }
 
     /**
-     * @param string $host
+     * @param string $dsn
      */
-    protected function setHost($host)
+    protected function setDsn($dsn)
     {
-        if ($host)
-            $this->host = $host;
-        else
-            throw new \InvalidArgumentException('Please supply the mysql host');
+        $this->dsn = $dsn;
     }
 
     /**
      * @return string
      */
-    public function getHost()
+    public function getDsn()
     {
-        return $this->host;
+        return $this->dsn;
     }
 
     /**

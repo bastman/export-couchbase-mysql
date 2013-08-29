@@ -6,7 +6,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Cb2Mysql\model\MysqlModel;
+use Cb2Mysql\model\PDOModel;
 use Cb2Mysql\model\CustomCouchbaseModel;
 use Cb2Mysql\ExportCouchbaseMysql;
 
@@ -59,14 +59,13 @@ class ExportCouchbaseMysqlCustomCommand extends ExportCouchbaseMysqlCommand
             $input->getOption('cb-ignore-cluster')
         );
 
-        $mysqlModel = new MysqlModel(
-            $input->getOption('mysql-host'),
-            $input->getOption('mysql-db'),
+        $PDOModel = new PDOModel(
+            'mysql:host='.$input->getOption('mysql-host').';dbname='.$input->getOption('mysql-db'),
             $input->getOption('mysql-user') ? '':'',
             $input->getOption('mysql-password') ? '':''
         );
 
-        $instance = new ExportCouchbaseMysql($cbModel, $mysqlModel);
+        $instance = new ExportCouchbaseMysql($cbModel, $PDOModel);
         if ($batchSize = $input->getOption('batch-size'))
             $instance->setBatchSize($batchSize);
 

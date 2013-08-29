@@ -2,7 +2,7 @@
 namespace Cb2Mysql;
 
 use Cb2Mysql\model\CouchbaseModel;
-use Cb2Mysql\model\MysqlModel;
+use Cb2Mysql\model\PDOModel;
 
 class ExportCouchbaseMysql
 {
@@ -12,19 +12,19 @@ class ExportCouchbaseMysql
     protected $cbModel;
 
     /**
-     * @var MysqlModel
+     * @var PDOModel
      */
-    protected $mysqlModel;
+    protected $PDOModel;
 
     /**
      * @var int
      */
     protected $batchSize;
 
-    public function __construct($cbModel, $mysqlModel, $batchSize=1000)
+    public function __construct($cbModel, $PDOModel, $batchSize=1000)
     {
         $this->setCbModel($cbModel);
-        $this->setMysqlModel($mysqlModel);
+        $this->setPDOModel($PDOModel);
         $this->setBatchSize($batchSize);
     }
 
@@ -64,19 +64,19 @@ class ExportCouchbaseMysql
     }
 
     /**
-     * @param \MysqlModel $mysqlModel
+     * @param \PDOModel $PDOModel
      */
-    public function setMysqlModel($mysqlModel)
+    public function setPDOModel($PDOModel)
     {
-        $this->mysqlModel = $mysqlModel;
+        $this->PDOModel = $PDOModel;
     }
 
     /**
-     * @return \MysqlModel
+     * @return \PDOModel
      */
-    public function getMysqlModel()
+    public function getPDOModel()
     {
-        return $this->mysqlModel;
+        return $this->PDOModel;
     }
 
     /**
@@ -93,8 +93,8 @@ class ExportCouchbaseMysql
         if (!$mysqlTable)
             $mysqlTable = $cbView;
 
-        $mysqlModel = $this->mysqlModel;
-        $mysqlModel->setTable($mysqlTable, $truncateTable);
+        $PDOModel = $this->PDOModel;
+        $PDOModel->setTable($mysqlTable, $truncateTable);
 
         $cbModel = $this->cbModel;
 
@@ -122,12 +122,12 @@ class ExportCouchbaseMysql
                 }, array());
 
             // make sure all columns are added to the mysql table
-            $mysqlModel->addColumns($columns);
+            $PDOModel->addColumns($columns);
 
             // insert data
             $inserted = 0;
             foreach ($results as $id => $row) {
-                $mysqlModel->addRow($row);
+                $PDOModel->addRow($row);
                 $inserted++;
             }
 
