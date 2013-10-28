@@ -10,7 +10,7 @@
     "cb-view-offset":0,
     "cb-view-params":{
         "startkey":"mystartkey",
-        "xendkey":"myendkey"
+        "endkey":"myendkey"
     },
     "mysql-host":"127.0.0.1",
     "mysql-db":"mydb",
