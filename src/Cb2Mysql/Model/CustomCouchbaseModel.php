@@ -32,12 +32,16 @@ class CustomCouchbaseModel extends CouchbaseModel
      * @param string $password
      * @param bool $ignoreCluster
      */
-    public function __construct($host, $bucket, $bucketPort, $user='', $password='', $ignoreCluster=false)
+    public function __construct(
+        $host, $bucket, $bucketPort, $user='', $password='', $ignoreCluster=false,
+        $viewParams
+    )
     {
         parent::__construct($host, $bucket, $user, $password);
 
         $this->setBucketPort($bucketPort);
         $this->setIgnoreCluster($ignoreCluster);
+        $this->setViewParams($viewParams);
     }
 
     /**
@@ -101,9 +105,19 @@ class CustomCouchbaseModel extends CouchbaseModel
      * @param $view
      * @return array of keys
      */
-    public function getKeys($design, $view)
+    public function getKeys($design, $view, $limit, $offset )
     {
-        $view = $this->getClientJson()->fetchView($this->bucket, $design, $view, null);
+        $viewParams = $this->getViewParams();
+        $isValid = is_int($offset) && ($offset>=0);
+        if($isValid) {
+            $viewParams['skip']=$offset;
+        }
+        $isValid = is_int($limit) && ($limit>0);
+        if($isValid) {
+            $viewParams['limit']=$limit;
+        }
+
+        $view = $this->getClientJson()->fetchView($this->bucket, $design, $view, $viewParams);
 
         return array_map(function($row) {
                 return $row['id'];
@@ -118,4 +132,46 @@ class CustomCouchbaseModel extends CouchbaseModel
     {
         return $this->getClientJson()->fetchMultiKeys($keys);
     }
+
+    /**
+     * @var array
+     */
+    protected $viewParams = array();
+
+    /**
+     * @param array|null $value
+     * @return $this
+     * @throws \Exception
+     *
+     */
+    public function setViewParams($value)
+    {
+        if($value===null) {
+            $value = array();
+        }
+
+        if(!is_array($value)) {
+
+            throw new \Exception('Invalid value! '.__METHOD__);
+        }
+
+        $this->viewParams = $value;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getViewParams()
+    {
+        $value = $this->viewParams;
+        if(!is_array($value)) {
+
+            return array();
+        }
+
+        return $value;
+    }
+
 }

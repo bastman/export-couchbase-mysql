@@ -247,12 +247,18 @@ class ViewHelper
 
         $queryString = $this->optionsToQueryString($params);
         $dataUrl = $this->getCouchbaseApiUrl() . "?" . $queryString;
+
+
         // for debugging
         $this->addHistoryLog(
             array(
                 'url' => $dataUrl,
             )
         );
+
+
+        echo $dataUrl.PHP_EOL;
+
         $response = json_decode(file_get_contents($dataUrl), true); // curl???
 
         return $response;

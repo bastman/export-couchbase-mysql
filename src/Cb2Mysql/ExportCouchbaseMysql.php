@@ -87,23 +87,45 @@ class ExportCouchbaseMysql
 
     /**
      * export data from couchbase model into mysql model
-     *
      * @param string $cbDesign
      * @param string $cbView
      * @param string $mysqlTable
      * @param bool $truncateTable
      * @return int
+     * @throws \Exception
      */
     public function export($cbDesign, $cbView, $mysqlTable='', $truncateTable=false)
     {
-        if (!$mysqlTable)
+        if (!$mysqlTable) {
             $mysqlTable = $cbView;
+        }
+
 
         $mysqlModel = $this->mysqlModel;
-        $mysqlModel->createTable($mysqlTable, $truncateTable);
+        try {
+            $mysqlModel->createTable($mysqlTable, $truncateTable);
 
-        if($truncateTable)
-            $mysqlModel->truncateTable($mysqlTable);
+        }catch(\Exception $e) {
+
+            throw new \Exception(
+                'mysql.createTable failed! '.$e->getMessage()
+            );
+
+        }
+
+        if($truncateTable) {
+            try {
+                $mysqlModel->truncateTable($mysqlTable);
+            }catch(\Exception $e) {
+
+                throw new \Exception(
+                    'mysql.truncateTable failed! '.$e->getMessage()
+                );
+
+            }
+
+        }
+
 
         $cbModel = $this->cbModel;
 
@@ -130,13 +152,37 @@ class ExportCouchbaseMysql
                     return $v;
                 }, array());
 
+
             // make sure all columns are added to the mysql table
-            $mysqlModel->addColumns($mysqlTable, $columns);
+            try {
+
+                $mysqlModel->addColumns($mysqlTable, $columns);
+
+            }catch (\Exception $e) {
+
+                throw new \Exception(
+                    'mysql.addColumns failed! '
+                    .$e->getMessage()
+                    .' table='.json_encode($mysqlTable)
+                    .' columns='.json_encode($columns)
+
+                );
+            }
 
             // insert data
             $inserted = 0;
             foreach ($results as $id => $row) {
-                $mysqlModel->addRow($mysqlTable, $row);
+
+                try {
+                    $mysqlModel->addRow($mysqlTable, $row);
+
+                }catch(\Exception $e) {
+
+                    throw new \Exception(
+                        'mysql.addRow failed! '.$e->getMessage()
+                    );
+                }
+
                 $inserted++;
             }
 

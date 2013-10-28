@@ -143,7 +143,7 @@ class CouchbaseModel
      * @param $view
      * @return array of keys
      */
-    public function getKeys($design, $view)
+    public function getKeys($design, $view, $limit, $offset)
     {
         // throws exception if view does not exists
         $view = $this->getNativeInstance()->view($design, $view);

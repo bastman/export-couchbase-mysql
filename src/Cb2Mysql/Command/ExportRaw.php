@@ -1,30 +1,37 @@
 <?php
+/**
+ * Created by JetBrains PhpStorm.
+ * User: seb
+ * Date: 10/28/13
+ * Time: 4:10 PM
+ * To change this template use File | Settings | File Templates.
+ */
+
 namespace Cb2Mysql\Command;
 
+
+use Cb2Mysql\ExportCouchbaseMysqlRaw;
+use Cb2Mysql\Model\CustomCouchbaseModel;
+use Cb2Mysql\Model\MysqlModel;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Cb2Mysql\model\MysqlModel;
-use Cb2Mysql\model\CustomCouchbaseModel;
 use Cb2Mysql\ExportCouchbaseMysql;
 
 /**
- * Class ExportCouchbaseMysqlCustomCommand
- *
- * This command exports the data using the custom couchbase model
- *
- * @package Application\Command
+ * Class ExportRaw
+ * @package Cb2Mysql\Command
  */
-class ExportCouchbaseMysqlCustomCommand extends ExportCouchbaseMysqlCommand
+class ExportRaw extends ExportCouchbaseMysqlCommand
 {
     protected function configure()
     {
         parent::configure();
 
         $this
-            ->setName('export-couchbase-mysql-custom')
+            ->setName('export-couchbase-mysql-raw')
             ->setDescription('Export data from a couchbase view to a mysql table using custom couchbase client')
             ->addOption(
                 'cb-bucket-port',
@@ -38,7 +45,24 @@ class ExportCouchbaseMysqlCustomCommand extends ExportCouchbaseMysqlCommand
                 InputOption::VALUE_NONE,
                 'Connect to given node only, ignore the rest of the cluster (useful when other nodes are firewalled)'
             )
-
+         ->addOption(
+        'cb-view-params',
+        null,
+        InputOption::VALUE_NONE,
+        'view params'
+        )
+            ->addOption(
+                'cb-view-offset',
+                null,
+                InputOption::VALUE_NONE,
+                'cb view offset (skip)'
+            )
+            ->addOption(
+                'cb-view-limit',
+                null,
+                InputOption::VALUE_NONE,
+                'cb view limit '
+            )
 
         ;
     }
@@ -52,16 +76,20 @@ class ExportCouchbaseMysqlCustomCommand extends ExportCouchbaseMysqlCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         $this->parseInput($input);
 
+        $cbViewParams = $input->getOption('cb-view-params');
+        if(!is_array($cbViewParams)) {
+            $cbViewParams = array();
+        }
         $cbModel = new CustomCouchbaseModel(
             $input->getOption('cb-host'),
             $input->getOption('cb-bucket'),
             $input->getOption('cb-bucket-port'),
             $input->getOption('cb-user'),
             $input->getOption('cb-pass'),
-            $input->getOption('cb-ignore-cluster')
+            $input->getOption('cb-ignore-cluster'),
+            $cbViewParams
         );
 
         $MysqlModel = new MysqlModel(
@@ -70,9 +98,21 @@ class ExportCouchbaseMysqlCustomCommand extends ExportCouchbaseMysqlCommand
             $input->getOption('mysql-password')
         );
 
-        $instance = new ExportCouchbaseMysql($cbModel, $MysqlModel);
-        if ($batchSize = $input->getOption('batch-size'))
+        $instance = new ExportCouchbaseMysqlRaw($cbModel, $MysqlModel);
+        if ($batchSize = $input->getOption('batch-size')) {
             $instance->setBatchSize($batchSize);
+        }
+        $cbViewLimit = (int)$input->getOption('cb-view-limit');
+        if($cbViewLimit<1) {
+            $cbViewLimit = 1000;
+        }
+        $cbViewOffset = (int)$input->getOption('cb-view-offset');
+        if($cbViewOffset<1) {
+            $cbViewOffset = 0;
+        }
+
+        $instance->setCbViewLimit($cbViewLimit);
+        $instance->setCbViewOffset($cbViewOffset);
 
         try {
             $nExported = $instance->export(

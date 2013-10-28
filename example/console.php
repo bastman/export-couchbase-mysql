@@ -10,8 +10,9 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) {
 use Symfony\Component\Console\Application;
 use Cb2Mysql\Command\ExportCouchbaseMysqlCommand;
 use Cb2Mysql\Command\ExportCouchbaseMysqlCustomCommand;
-
+use Cb2Mysql\Command\ExportRaw;
 $console = new Application();
 $console->add(new ExportCouchbaseMysqlCommand());
 $console->add(new ExportCouchbaseMysqlCustomCommand());
+$console->add(new ExportRaw());
 $console->run();

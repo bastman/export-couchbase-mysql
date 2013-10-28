@@ -58,10 +58,7 @@ class MysqlModel
                 $this->pdoInstance = new \PDO($this->dsn, $this->user, $this->password);
                 $this->pdoInstance->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
             } catch (\Exception $ex) {
-
-                throw new \ErrorException(
-                    'Could not connect to mysql database: '.$ex->getMessage()
-                );
+                throw new \ErrorException('Could not connect to mysql database: '.$ex->getMessage());
             }
         }
 
@@ -183,7 +180,10 @@ class MysqlModel
     public function addColumns($table, $columns)
     {
         foreach (array_diff($columns, $this->getColumns($table)) as $column) {
-            $this->getPdoInstance()->exec('alter table ' . $table . ' add column ' . $column . ' TEXT');
+
+
+
+            $this->getPdoInstance()->exec('alter table ' . $table . ' add column ' . $column . ' LONGTEXT');
         }
 
         $this->tableColumns[$table] = array_unique(array_merge($this->tableColumns[$table], $columns));
@@ -211,6 +211,26 @@ class MysqlModel
             'insert into ' . $table . ' (' . implode(',', array_keys($row)) . ') VALUES (' . implode(',', $binds) . ')'
         );
         foreach ($row as $key => $value) {
+            $stmt->bindValue(":$key", $value);
+        }
+
+        return $stmt->execute();
+    }
+
+    /**
+     * @param $table
+     * @param $id
+     * @return mixed
+     */
+    public function getRowById($table, $id)
+    {
+        $binds = array(
+            'id'=>$id,
+        );
+        $stmt = $this->getPdoInstance()->prepare(
+            'select * from ' . $table . ' where id=:id LIMIT 1'
+        );
+        foreach ($binds as $key => $value) {
             $stmt->bindValue(":$key", $value);
         }
 
