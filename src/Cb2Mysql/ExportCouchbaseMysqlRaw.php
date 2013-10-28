@@ -252,7 +252,7 @@ class ExportCouchbaseMysqlRaw
                         $cbCreated = (string)$cbValue['created'];
                     }
                     if(isset($cbValue['modified'])) {
-                        $cbCreated = (string)$cbValue['modified'];
+                        $cbModified = (string)$cbValue['modified'];
                     }
                 }
 
