@@ -62,8 +62,8 @@ class ExportCouchbaseMysqlCustomCommand extends ExportCouchbaseMysqlCommand
 
         $MysqlModel = new MysqlModel(
             'mysql:host='.$input->getOption('mysql-host').';dbname='.$input->getOption('mysql-db'),
-            $input->getOption('mysql-user') ? '':'',
-            $input->getOption('mysql-password') ? '':''
+            $input->getOption('mysql-user'),
+            $input->getOption('mysql-password')
         );
 
         $instance = new ExportCouchbaseMysql($cbModel, $MysqlModel);
