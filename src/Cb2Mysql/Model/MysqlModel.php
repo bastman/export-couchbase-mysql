@@ -58,7 +58,10 @@ class MysqlModel
                 $this->pdoInstance = new \PDO($this->dsn, $this->user, $this->password);
                 $this->pdoInstance->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
             } catch (\Exception $ex) {
-                throw new \ErrorException('Could not connect to mysql database');
+
+                throw new \ErrorException(
+                    'Could not connect to mysql database: '.$ex->getMessage()
+                );
             }
         }
 
