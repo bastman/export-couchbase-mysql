@@ -1,0 +1,23 @@
+{
+    "cb-host":"localhost",
+    "cb-bucket":"default",
+    "cb-bucket-port":11211,
+    "cb-user":"Administrator",
+    "cb-pass":"Administrator",
+    "cb-design":"mydesign",
+    "cb-view":"myview",
+    "cb-view-limit":1000,
+    "cb-view-offset":0,
+    "cb-view-params":{
+        "startkey":"mystartkey",
+        "xendkey":"myendkey"
+    },
+    "mysql-host":"127.0.0.1",
+    "mysql-db":"mydb",
+    "mysql-user":"mydbuser",
+    "mysql-password":"mydbpass",
+    "mysql-table":"mydbtable",
+    "truncate":true,
+    "batch-size":10000,
+    "cb-ignore-cluster":true
+}
