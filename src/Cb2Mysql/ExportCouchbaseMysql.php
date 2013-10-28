@@ -1,8 +1,8 @@
 <?php
 namespace Cb2Mysql;
 
-use Cb2Mysql\model\CouchbaseModel;
-use Cb2Mysql\model\MysqlModel;
+use Cb2Mysql\Model\CouchbaseModel;
+use Cb2Mysql\Model\MysqlModel;
 
 class ExportCouchbaseMysql
 {
@@ -54,7 +54,7 @@ class ExportCouchbaseMysql
     }
 
     /**
-     * @param \CouchbaseModel $cbModel
+     * @param CouchbaseModel $cbModel
      */
     public function setCbModel($cbModel)
     {
@@ -62,7 +62,7 @@ class ExportCouchbaseMysql
     }
 
     /**
-     * @return \CouchbaseModel
+     * @return CouchbaseModel
      */
     public function getCbModel()
     {
@@ -70,7 +70,7 @@ class ExportCouchbaseMysql
     }
 
     /**
-     * @param \MysqlModel $mysqlModel
+     * @param MysqlModel $mysqlModel
      */
     public function setMysqlModel($mysqlModel)
     {
@@ -78,7 +78,7 @@ class ExportCouchbaseMysql
     }
 
     /**
-     * @return \MysqlModel
+     * @return MysqlModel
      */
     public function getMysqlModel()
     {

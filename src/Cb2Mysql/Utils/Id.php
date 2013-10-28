@@ -7,6 +7,11 @@
  * To change this template use File | Settings | File Templates.
  */
 namespace Cb2Mysql\Utils;
+
+/**
+ * Class Id
+ * @package Cb2Mysql\Utils
+ */
 class Id
 {
 

@@ -1,9 +1,9 @@
 <?php
-namespace Cb2Mysql\model;
+namespace Cb2Mysql\Model;
 
 /**
  * Class MysqlModel responsible for saving data to mysql
- * @package Cb2Mysql\model
+ * @package Cb2Mysql\Model
  */
 class MysqlModel
 {

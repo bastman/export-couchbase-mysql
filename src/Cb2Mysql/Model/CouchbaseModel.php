@@ -1,6 +1,10 @@
 <?php
-namespace Cb2Mysql\model;
+namespace Cb2Mysql\Model;
 
+/**
+ * Class CouchbaseModel
+ * @package Cb2Mysql\Model
+ */
 class CouchbaseModel
 {
     /**

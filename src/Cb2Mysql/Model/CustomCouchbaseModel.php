@@ -1,8 +1,12 @@
 <?php
-namespace Cb2Mysql\model;
+namespace Cb2Mysql\Model;
 
 use Cb2Mysql\Couchbase\ClientJson;
 
+/**
+ * Class CustomCouchbaseModel
+ * @package Cb2Mysql\Model
+ */
 class CustomCouchbaseModel extends CouchbaseModel
 {
     /**
