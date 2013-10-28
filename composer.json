@@ -1,11 +1,17 @@
 {
-    "name":"Crowdpark/export-couchbase-mysql",
+    "name":"bastman/export-couchbase-mysql",
     "type":"data export",
     "description":"export data from couchbase into mysql",
     "keywords":["export couchbase mysql" ],
-    "homepage":"https://github.com/wouter-crowdpark/export-couchbase-mysql",
+    "homepage":"https://github.com/bastman/export-couchbase-mysql",
     "license":"MIT",
     "authors":[
+        {
+            "name":"Seb Schmidt",
+            "email":"seb@crowdpark.com",
+            "homepage":"http://www.crowdpark.com",
+            "role":"Developer"
+        },
         {
             "name":"Wouter",
             "email":"wouter@crowdpark.com",
